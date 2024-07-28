@@ -1,0 +1,37 @@
+https://colab.research.google.com/drive/17AgH8s8Qzw9DbB6avOvHmN3f_xOmv66M?usp=sharing
+
+def ozetleme(metin,sayi):
+  text = metin
+  sentences = sent_tokenize(text, language='turkish')
+  stop_words = set(stopwords.words('turkish'))
+  words = word_tokenize(text)
+
+  words = [word.lower() for word in words if word.isalpha()]
+  words = [word for word in words if word not in stop_words]
+  lemmatizer = WordNetLemmatizer()
+
+  words = [lemmatizer.lemmatize(word) for word in words]
+  freq_dist = FreqDist(words)
+  sentence_scores = {}
+
+  for i, sentence in enumerate(sentences):
+      sentence_words = word_tokenize(sentence.lower())
+      sentence_score = sum([freq_dist[word] for word in sentence_words if word in freq_dist])
+
+      sentence_scores[i] = sentence_score
+  sorted_scores = sorted(sentence_scores.items(), key=lambda x: x[1], reverse=True)
+  selected_sentences = sorted_scores[:sayi]
+  selected_sentences = sorted(selected_sentences)
+
+  # Özet oluşturma
+  summary = ' '.join([sentences[i] for i, _ in selected_sentences])
+  print(summary)
+
+metin ='''
+Makale, herhangi bir konuda, bir görüşü, bir düşünceyi savunmak ve kanıtlamak için yazılan yazılara denir. Gazete ve dergilerde yayımlanır. Bir gerçeği açıklamak, bir konuda görüş ve düşünceler öne sürmek ya da bir tezi savunmak, desteklemek için yazılan yazılara da "makale" denir. Makaleler bir gerçeği kanıtlamak için yazılır. Makalelerde bilimsel verilerden yararlanılır.[1]
+
+Akademik makaleler ise aynı zamanda bilimsel ve akademik boyuttaki dergilerde, bilimsel çalışmaların sonuçlarını içeren yazılar biçiminde de oluşturulabilmektedir. Bu konudaki dergiler ücretli ya da ücretsiz ve ulusal ya da uluslararası olabilmektedir. Hakemlik süreçleri kör hakemlik biçiminde birden fazla hakem ile yürütülebilmektedir[2]
+          '''
+
+sayi = 1
+ozetleme(metin,sayi)
